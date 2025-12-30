@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 | For My Param Mitra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        :root {
+            --gold: #f3cf7a;
+            --pink: #ff758c;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --neon-shadow: 0 0 20px rgba(243, 207, 122, 0.4);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+            color: white; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden;
+        }
+
+        /* Spinning Music Disk */
+        #music-control {
+            position: fixed; top: 20px; right: 20px; z-index: 100;
+            background: var(--glass-bg); border: 2px solid var(--gold);
+            border-radius: 50%; width: 50px; height: 50px;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; box-shadow: var(--neon-shadow);
+        }
+        .spinning { animation: rotateMusic 4s linear infinite; }
+        @keyframes rotateMusic { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Cinematic Container */
+        .container {
+            width: 90%; max-width: 380px; height: 85vh;
+            background: var(--glass-bg); backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px); border-radius: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 30px; text-align: center;
+            display: flex; flex-direction: column; justify-content: space-around;
+            box-shadow: 0 40px 60px rgba(0,0,0,0.8);
+        }
+
+        /* Glow Animations */
+        h1 {
+            font-family: 'Dancing Script', cursive; font-size: 2.8rem; color: var(--gold);
+            animation: glowTitle 2s ease-in-out infinite alternate;
+        }
+        @keyframes glowTitle {
+            from { text-shadow: 0 0 10px var(--gold); }
+            to { text-shadow: 0 0 25px var(--gold), 0 0 10px var(--pink); }
+        }
+
+        /* 3D Page Transitions */
+        .page { display: none; width: 100%; perspective: 1000px; }
+        .active { display: block; animation: entrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes entrance {
+            0% { opacity: 0; transform: scale(0.5) rotateY(-30deg) translateY(50px); filter: blur(10px); }
+            100% { opacity: 1; transform: scale(1) rotateY(0deg) translateY(0); filter: blur(0); }
+        }
+
+        /* Floating Image */
+        #photo-preview {
+            width: 160px; height: 160px; border-radius: 50%;
+            border: 4px solid var(--gold); object-fit: cover;
+            margin: 0 auto; box-shadow: var(--neon-shadow);
+            animation: floatImg 3s ease-in-out infinite;
+        }
+        @keyframes floatImg { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        /* Countdown */
+        .timer { display: flex; justify-content: space-between; margin: 15px 0; }
+        .time-box { background: rgba(0,0,0,0.3); padding: 8px; border-radius: 12px; width: 22%; border: 1px solid rgba(255,255,255,0.1); }
+        .time-box span { display: block; font-size: 1.2rem; color: var(--gold); font-weight: bold; }
+        .time-box label { font-size: 0.6rem; opacity: 0.7; }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.1); color: white;
+            border: 1px solid var(--gold); padding: 16px; border-radius: 15px;
+            font-weight: 600; text-transform: uppercase; cursor: pointer; transition: 0.3s;
+        }
+        .btn:hover { background: var(--gold); color: black; box-shadow: var(--neon-shadow); }
+
+        input {
+            width: 100%; padding: 15px; background: rgba(0,0,0,0.4);
+            border: 1px solid var(--gold); border-radius: 12px; color: white;
+            text-align: center; outline: none; margin-bottom: 10px;
+        }
+
+        .error-shake { animation: shake 0.4s ease-in-out; border-color: red !important; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+
+        .heart { position: absolute; color: var(--pink); pointer-events: none; animation: rise 6s linear infinite; opacity: 0; }
+        @keyframes rise {
+            0% { transform: translateY(110vh) scale(0); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="music-control" onclick="toggleMusic()">🎵</div>
+    <audio id="bg-music" loop>
+        <source src="dd.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <div id="p1" class="page active">
+            <h1>Almost 2026</h1>
+            <div class="timer">
+                <div class="time-box"><span id="days">00</span><label>Days</label></div>
+                <div class="time-box"><span id="hours">00</span><label>Hrs</label></div>
+                <div class="time-box"><span id="mins">00</span><label>Min</label></div>
+                <div class="time-box"><span id="secs">00</span><label>Sec</label></div>
+            </div>
+            <p>The countdown to our next big year has begun.</p>
+            <button class="btn" onclick="go(2)">Enter Experience</button>
+        </div>
+
+        <div id="p2" class="page">
+            <h1>Us. Always.</h1>
+            <img id="photo-preview" src="WhatsApp Image 2025-12-30 at 9.00.42 PM.jpeg" alt="paramitra
+            ">
+            <input type="file" id="img-input" accept="image/*" style="margin-top: 10px; border:none; background:none;">
+            <p>Upload our favorite memory from 2025!</p>
+            <button class="btn" onclick="go(3)">Next Chapter</button>
+        </div>
+
+        <div id="p3" class="page">
+            <h1>Deep Gratitude</h1>
+            <p>Thank you for being my unbiological sibling. 2026 is going to be legendary because you're in it.</p>
+            <button class="btn" onclick="go(4)">The Secret</button>
+        </div>
+
+        <div id="p4" class="page">
+            <h1>Locked for Besties</h1>
+            <p>Prove it's you. Enter the secret word:</p>
+            <input type="text" id="passInput" placeholder="Hint:paramitra">
+            <button class="btn" onclick="checkPass()">Unlock 🎉</button>
+        </div>
+
+        <div id="p5" class="page">
+            <h1>Happy New Year!</h1>
+            <p>To my favorite human. Let's conquer 2026 together!</p>
+            <button class="btn" onclick="celebrate()">✨ MAKE MAGIC ✨</button>
+        </div>
+    </div>
+
+    <script>
+        const SECRET = "paramitra";
+
+        // Navigation
+        function go(n) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('p' + n).classList.add('active');
+            if(n > 1) playMusic();
+        }
+
+        // Haptic & Pass Logic
+        function checkPass() {
+            const val = document.getElementById('passInput');
+            if(val.value.toLowerCase() === SECRET) {
+                go(5);
+            } else {
+                val.classList.add('error-shake');
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]); // Vibrate Phone
+                setTimeout(() => val.classList.remove('error-shake'), 400);
+            }
+        }
+
+        // Timer
+        function updateTimer() {
+            const target = new Date("Jan 1, 2026 00:00:00").getTime();
+            const now = new Date().getTime();
+            const gap = target - now;
+            const d = 1000 * 60 * 60 * 24;
+            document.getElementById("days").innerText = Math.floor(gap / d);
+            document.getElementById("hours").innerText = Math.floor((gap % d) / (1000 * 60 * 60));
+            document.getElementById("mins").innerText = Math.floor((gap % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById("secs").innerText = Math.floor((gap % (1000 * 60)) / 1000);
+        }
+        setInterval(updateTimer, 1000);
+
+        // Photo Upload
+        document.getElementById('img-input').onchange = (e) => {
+            const file = e.target.files[0];
+            if(file) document.getElementById('photo-preview').src = URL.createObjectURL(file);
+        };
+
+        // Celebration
+        function celebrate() {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        }
+
+        // Music Logic
+        function playMusic() {
+            const m = document.getElementById('bg-music');
+            if(m.paused) { m.play(); document.getElementById('music-control').classList.add('spinning'); }
+        }
+        function toggleMusic() {
+            const m = document.getElementById('bg-music');
+            const ctrl = document.getElementById('music-control');
+            if(m.paused) { m.play(); ctrl.classList.add('spinning'); }
+            else { m.pause(); ctrl.classList.remove('spinning'); }
+        }
+
+        // Background Hearts
+        setInterval(() => {
+            const h = document.createElement('div');
+            h.className = 'heart'; h.innerHTML = '❤️';
+            h.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 6000);
+        }, 800);
+    </script>
+</body>
+</html>
